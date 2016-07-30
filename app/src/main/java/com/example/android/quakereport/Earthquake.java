@@ -8,6 +8,7 @@ public class Earthquake {
     private double magnitude;
     private String location;
     private Long timeInMilliSeconds;
+    private String url;
 
     public Earthquake() {
     }
@@ -20,10 +21,11 @@ public class Earthquake {
      * @param timeInMilliSeconds is the time in milliseconds (from the Epoch) when the
      *                           earthquake happened
      */
-    public Earthquake(double magnitude, String location, Long timeInMilliSeconds) {
+    public Earthquake(double magnitude, String location, Long timeInMilliSeconds, String url) {
         this.magnitude = magnitude;
         this.location = location;
         this.timeInMilliSeconds = timeInMilliSeconds;
+        this.url = url;
     }
 
     public double getMagnitude() {
@@ -49,4 +51,9 @@ public class Earthquake {
     public void setTimeInMilliSeconds(Long date) {
         this.timeInMilliSeconds = date;
     }
+
+    public String getUrl() {
+        return url;
+    }
+
 }
