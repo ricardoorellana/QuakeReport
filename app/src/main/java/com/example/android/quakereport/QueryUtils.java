@@ -9,6 +9,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -16,6 +20,9 @@ import java.util.ArrayList;
  * Helper methods related to requesting and receiving earthquake data from USGS.
  */
 public final class QueryUtils {
+
+    /** Tag for the log messages */
+    public static final String LOG_TAG = QueryUtils.class.getSimpleName();
 
     /** Sample JSON response for a USGS query */
     private static final String SAMPLE_JSON_RESPONSE = "{\"type\":\"FeatureCollection\",\"metadata\":{\"generated\":1462295443000,\"url\":\"http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2016-01-01&endtime=2016-01-31&minmag=6&limit=10\",\"title\":\"USGS Earthquakes\",\"status\":200,\"api\":\"1.5.2\",\"limit\":10,\"offset\":1,\"count\":10},\"features\":[{\"type\":\"Feature\",\"properties\":{\"mag\":0.2,\"place\":\"88km N of Yelizovo, Russia\",\"time\":1454124312220,\"updated\":1460674294040,\"tz\":720,\"url\":\"http://earthquake.usgs.gov/earthquakes/eventpage/us20004vvx\",\"detail\":\"http://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us20004vvx&format=geojson\",\"felt\":2,\"cdi\":3.4,\"mmi\":5.82,\"alert\":\"green\",\"status\":\"reviewed\",\"tsunami\":1,\"sig\":798,\"net\":\"us\",\"code\":\"20004vvx\",\"ids\":\",at00o1qxho,pt16030050,us20004vvx,gcmt20160130032510,\",\"sources\":\",at,pt,us,gcmt,\",\"types\":\",cap,dyfi,finite-fault,general-link,general-text,geoserve,impact-link,impact-text,losspager,moment-tensor,nearby-cities,origin,phase-data,shakemap,tectonic-summary,\",\"nst\":null,\"dmin\":0.958,\"rms\":1.19,\"gap\":17,\"magType\":\"mww\",\"type\":\"earthquake\",\"title\":\"M 7.2 - 88km N of Yelizovo, Russia\"},\"geometry\":{\"type\":\"Point\",\"coordinates\":[158.5463,53.9776,177]},\"id\":\"us20004vvx\"},\n" +
@@ -35,6 +42,51 @@ public final class QueryUtils {
      * directly from the class name QueryUtils (and an object instance of QueryUtils is not needed).
      */
     private QueryUtils() {
+    }
+
+    /**
+     * Make an HTTP request to the given URL and return a String as the response.
+     */
+    public static String makeHttpRequest(URL url) throws IOException {
+        String jsonResponse = "";
+        HttpURLConnection urlConnection = null;
+        InputStream inputStream = null;
+
+
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+//            urlConnection.setReadTimeout(1000);
+            urlConnection.setConnectTimeout(1000);
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
+
+            if (urlConnection.getResponseCode() == 200) {
+                inputStream = urlConnection.getInputStream();
+                jsonResponse = readFromInputStream(inputStream);
+            } else {
+                Log.i(LOG_TAG, " Error getting JSON respnse");
+            }
+
+        } catch (IOException e) {
+//            e.printStackTrace();
+            Log.e(LOG_TAG, "Problem retrieving the earthquake JSON results.", e);
+        } finally {
+
+            if(urlConnection != null) {
+                urlConnection.disconnect();
+            }
+
+            if(inputStream != null) {
+                inputStream.close();
+            }
+        }
+
+        return jsonResponse;
+    }
+
+    private static String readFromInputStream(InputStream inputStream) {
+        
+        return null;
     }
 
     /**
@@ -86,5 +138,7 @@ public final class QueryUtils {
         // Return the list of earthquakes
         return earthquakes;
     }
+
+
 
 }
