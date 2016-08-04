@@ -4,13 +4,17 @@ package com.example.android.quakereport;
  * Created by Rorellanam on 7/27/16.
  */
 import android.util.Log;
+import android.util.StringBuilderPrinter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -84,9 +88,19 @@ public final class QueryUtils {
         return jsonResponse;
     }
 
-    private static String readFromInputStream(InputStream inputStream) {
-        
-        return null;
+    private static String readFromInputStream(InputStream inputStream) throws IOException {
+        StringBuilder outPutString = new StringBuilder();
+        if(inputStream != null) {
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+            BufferedReader reader = new BufferedReader(inputStreamReader);
+
+            String line = reader.readLine();
+            while(line != null) {
+                outPutString.append(line);
+                line = reader.readLine();
+            }
+        }
+        return outPutString.toString();
     }
 
     /**
