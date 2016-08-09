@@ -103,6 +103,22 @@ public final class QueryUtils {
      * Query the USGS dataset and return a list of {@link Earthquake} objects.
      */
     public static List<Earthquake> fetchEarthquakeData(String requestUrl) {
+
+
+        Log.i(LOG_TAG, "fetchEarthquakeData");
+
+        /**
+         *  We are forcing the background thread to pause execution and wait for 2 seconds (which is 2000 milliseconds),
+         *  before proceeding to execute the rest of lines of code in this method. If you try to add the Thread.sleep(2000);
+         *  method call by itself, Android Studio will complain that there is an uncaught exception, so we need to
+         *  surround that statement with a try/catch block.
+         */
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         // Create URL object
         URL url = createUrl(requestUrl);
 
