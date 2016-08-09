@@ -28,6 +28,7 @@ import java.util.List;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -39,6 +40,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
 
     /** TextView that is displayed when the list is empty */
     private TextView mEmptyStateTextView;
+    private ProgressBar mProgressBar;
 
     /**
      * Constant value for the earthquake loader ID. We can choose any integer.
@@ -54,6 +56,10 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
         setContentView(R.layout.earthquake_activity);
 
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
+
+        mProgressBar = (ProgressBar) findViewById(R.id.loading_spinner);
+
+        mProgressBar.setVisibility(View.VISIBLE);
 
         // Get a reference to the LoaderManager, in order to interact with loaders.
         LoaderManager loaderManager = getLoaderManager();
@@ -108,6 +114,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
 
         Log.i(LOG_TAG, "onLoadFinished");
 
+        mProgressBar.setVisibility(View.GONE);
 
         // Clear the adapter of previous earthquake data
         listAdapter.clear();
